@@ -2,15 +2,17 @@ const fs = require("fs-extra");
 const axios = require("axios");
 const { utils } = global;
 
+let usedVideos = [];
+
 module.exports = {
 	config: {
 		name: "prefix",
-		version: "1.4",
+		version: "1.7",
 		author: "SaGor",
 		countDown: 5,
 		role: 0,
 		shortDescription: "Show bot prefix",
-		longDescription: "Show prefix with styled panel",
+		longDescription: "Prefix panel with random video",
 		category: "info"
 	},
 
@@ -33,10 +35,22 @@ module.exports = {
 		if (event.body && event.body.toLowerCase() === "prefix") {
 
 			const res = await axios.get(
-				"https://sagor-apis-xyz.vercel.app/category/get?key=sagor&name=sad"
+				"https://sagor-apis-xyz.vercel.app/video/list?key=sagor&name=sad"
 			);
 
-			const videoURL = res.data.video;
+			const videos = res.data.videos;
+
+			if (!videos || videos.length === 0)
+				return message.reply("No videos found.");
+
+			if (usedVideos.length === videos.length)
+				usedVideos = [];
+
+			const available = videos.filter(v => !usedVideos.includes(v.url));
+
+			const random = available[Math.floor(Math.random() * available.length)];
+
+			usedVideos.push(random.url);
 
 			const cachePath = __dirname + "/cache";
 
@@ -46,7 +60,7 @@ module.exports = {
 			const filePath = cachePath + "/prefix.mp4";
 
 			const video = await axios({
-				url: videoURL,
+				url: random.url,
 				method: "GET",
 				responseType: "arraybuffer"
 			});
