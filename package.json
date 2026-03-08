@@ -9,7 +9,7 @@
         },
         "dependencies": {
                 "@distube/ytdl-core": "^4.13.3",
-                "@dongdev/fca-unofficial": "^3.0.29",
+                "sagor-nx-fca": "^0.0.2",
                 "@vreden/youtube_scraper": "^1.2.8",
                 "@ybd-project/ytdl-core": "^6.0.8",
                 "archiver": "^7.0.1",
